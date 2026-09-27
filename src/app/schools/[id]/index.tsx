@@ -1,81 +1,135 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { MapPin, Pencil, SearchX, Trash2, Users } from 'lucide-react-native';
-import { ScrollView } from 'react-native';
+import { BookOpen, SearchX, WifiOff } from 'lucide-react-native';
+import { FlatList, RefreshControl } from 'react-native';
 
-import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { HStack } from '@/components/ui/hstack';
-import { Icon } from '@/components/ui/icon';
-import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { ClassCard } from '@/features/classes/components/class-card';
+import { DeleteClassDialog } from '@/features/classes/components/delete-class-dialog';
+import { ShiftFilter } from '@/features/classes/components/shift-filter';
+import { useDeleteClass } from '@/features/classes/hooks/use-delete-class';
+import { useSchoolClasses } from '@/features/classes/hooks/use-school-classes';
+import type { SchoolClass } from '@/features/classes/types';
 import { DeleteSchoolDialog } from '@/features/schools/components/delete-school-dialog';
-import { SchoolAvatar } from '@/features/schools/components/school-avatar';
+import { SchoolHeader } from '@/features/schools/components/school-header';
 import { useDeleteSchool } from '@/features/schools/hooks/use-delete-school';
 import { useSchool } from '@/features/schools/hooks/use-school';
+import { AddFab } from '@/shared/components/add-fab';
 import { EmptyState } from '@/shared/components/empty-state';
-import { pluralize } from '@/shared/utils/text';
+import { ListSkeleton } from '@/shared/components/list-skeleton';
+import { SearchBar } from '@/shared/components/search-bar';
+import { useResponsive } from '@/shared/hooks/use-responsive';
 
 export default function SchoolDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const school = useSchool(id);
-  const deletion = useDeleteSchool(() => router.back());
+  const classes = useSchoolClasses(id);
+  const schoolDeletion = useDeleteSchool(() => router.back());
+  const classDeletion = useDeleteClass();
+  const { columns, isTablet } = useResponsive();
 
   if (!school) {
     return <EmptyState icon={SearchX} title="Escola não encontrada" />;
   }
 
+  const newClass = () =>
+    router.push({ pathname: '/schools/[id]/classes/new', params: { id: school.id } });
+
+  const editClass = (schoolClass: SchoolClass) =>
+    router.push({
+      pathname: '/schools/[id]/classes/[classId]/edit',
+      params: { id: school.id, classId: schoolClass.id },
+    });
+
+  const renderEmpty = () => {
+    if (classes.isInitialLoading) return <ListSkeleton count={3} />;
+    if (classes.error) {
+      return (
+        <EmptyState
+          icon={WifiOff}
+          title="Não foi possível carregar as turmas"
+          description={classes.error}
+          action={{ label: 'Tentar novamente', onPress: classes.refresh }}
+        />
+      );
+    }
+    if (classes.isFiltering) {
+      return (
+        <EmptyState
+          icon={SearchX}
+          title="Nenhuma turma encontrada"
+          description="Tente outro termo ou turno."
+          action={{ label: 'Limpar filtros', onPress: classes.clearFilters }}
+        />
+      );
+    }
+    return (
+      <EmptyState
+        icon={BookOpen}
+        title="Nenhuma turma cadastrada"
+        description="Cadastre a primeira turma desta escola."
+        action={{ label: 'Cadastrar turma', onPress: newClass }}
+      />
+    );
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: school.name }} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerClassName="gap-4 p-4">
-        <VStack className="gap-4 rounded-2xl border border-border bg-card p-5">
-          <HStack className="items-center gap-4">
-            <SchoolAvatar name={school.name} size="lg" />
-            <VStack className="flex-1 gap-1">
-              <Heading size="lg" className="text-foreground">
-                {school.name}
-              </Heading>
-              <HStack className="items-center gap-1">
-                <Icon as={MapPin} size="sm" className="text-muted-foreground" />
-                <Text size="sm" className="flex-1 text-muted-foreground">
-                  {school.address}
-                </Text>
-              </HStack>
-              <HStack className="items-center gap-1">
-                <Icon as={Users} size="sm" className="text-muted-foreground" />
-                <Text size="sm" className="text-muted-foreground">
-                  {pluralize(school.classIds.length, 'turma', 'turmas')}
-                </Text>
-              </HStack>
-            </VStack>
-          </HStack>
-          <HStack className="gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 rounded-xl"
-              onPress={() =>
+      <FlatList
+        key={columns}
+        data={classes.classes}
+        numColumns={columns}
+        keyExtractor={(item) => item.id}
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentContainerClassName={`gap-3 pb-32 pt-4 ${isTablet ? 'px-8' : 'px-4'}`}
+        columnWrapperClassName={columns > 1 ? 'gap-3' : undefined}
+        refreshControl={
+          <RefreshControl refreshing={classes.isRefreshing} onRefresh={classes.refresh} />
+        }
+        ListHeaderComponent={
+          <VStack className="gap-4 pb-2">
+            <SchoolHeader
+              school={school}
+              onEdit={() =>
                 router.push({ pathname: '/schools/[id]/edit', params: { id: school.id } })
               }
-            >
-              <ButtonIcon as={Pencil} />
-              <ButtonText>Editar</ButtonText>
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 rounded-xl"
-              onPress={() => deletion.request(school)}
-            >
-              <ButtonIcon as={Trash2} className="text-destructive" />
-              <ButtonText className="text-destructive">Excluir</ButtonText>
-            </Button>
-          </HStack>
-        </VStack>
-      </ScrollView>
+              onDelete={() => schoolDeletion.request(school)}
+            />
+            <Heading size="md" className="pt-2 text-foreground">
+              Turmas
+            </Heading>
+            {classes.totalClasses > 0 ? (
+              <VStack className="gap-3">
+                <SearchBar
+                  value={classes.query}
+                  onChangeText={classes.setQuery}
+                  placeholder="Buscar turma"
+                />
+                <ShiftFilter value={classes.shift} onChange={classes.setShift} />
+              </VStack>
+            ) : null}
+          </VStack>
+        }
+        ListEmptyComponent={renderEmpty}
+        renderItem={({ item }) => (
+          <ClassCard schoolClass={item} onEdit={editClass} onDelete={classDeletion.request} />
+        )}
+      />
+      <AddFab label="Nova turma" onPress={newClass} />
       <DeleteSchoolDialog
-        school={deletion.target}
-        isDeleting={deletion.isDeleting}
-        onConfirm={deletion.confirm}
-        onClose={deletion.cancel}
+        school={schoolDeletion.target}
+        isDeleting={schoolDeletion.isDeleting}
+        onConfirm={schoolDeletion.confirm}
+        onClose={schoolDeletion.cancel}
+      />
+      <DeleteClassDialog
+        schoolClass={classDeletion.target}
+        isDeleting={classDeletion.isDeleting}
+        onConfirm={classDeletion.confirm}
+        onClose={classDeletion.cancel}
       />
     </>
   );
