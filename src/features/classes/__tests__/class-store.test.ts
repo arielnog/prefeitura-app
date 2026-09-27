@@ -1,7 +1,8 @@
-import { buildSchoolClass } from '@/test/factories';
+import { createSchoolStore } from '@/features/schools/store/school-store';
+import { buildSchool, buildSchoolClass } from '@/test/factories';
 
 import type { ClassRepository } from '../api/class-repository';
-import { createClassStore } from '../store/class-store';
+import { createClassStore, pruneClassesOfRemovedSchools } from '../store/class-store';
 
 const makeRepository = (overrides: Partial<ClassRepository> = {}): jest.Mocked<ClassRepository> =>
   ({
@@ -64,5 +65,25 @@ describe('class store', () => {
     expect(repository.remove).toHaveBeenCalledWith(created.id);
     expect(store.getState().classesBySchool.s1).toEqual([]);
     expect(onClassIdsChange).toHaveBeenLastCalledWith('s1', []);
+  });
+
+  it('drops cached classes of schools removed from the schools store', () => {
+    const kept = buildSchool();
+    const removed = buildSchool();
+    const { store } = setup(makeRepository());
+    const schoolStore = createSchoolStore({} as never, { skipHydration: true });
+    schoolStore.setState({ schools: [kept, removed] });
+    store.setState({
+      classesBySchool: {
+        [kept.id]: [buildSchoolClass({ schoolId: kept.id })],
+        [removed.id]: [buildSchoolClass({ schoolId: removed.id })],
+      },
+    });
+    const unsubscribe = pruneClassesOfRemovedSchools(store, schoolStore);
+
+    schoolStore.setState({ schools: [kept] });
+
+    expect(Object.keys(store.getState().classesBySchool)).toEqual([kept.id]);
+    unsubscribe();
   });
 });

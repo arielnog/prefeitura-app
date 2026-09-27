@@ -17,6 +17,8 @@ export interface ClassState {
   createClass: (input: CreateSchoolClassInput) => Promise<SchoolClass>;
   updateClass: (schoolClass: SchoolClass, input: SchoolClassInput) => Promise<SchoolClass>;
   deleteClass: (schoolClass: SchoolClass) => Promise<void>;
+  /** Descarta o cache de turmas de uma escola (ex.: escola excluída; o servidor já removeu as turmas). */
+  removeSchoolClasses: (schoolId: string) => void;
 }
 
 interface ClassStoreOptions {
@@ -87,6 +89,14 @@ export const createClassStore = (
             return updated;
           },
 
+          removeSchoolClasses: (schoolId) =>
+            set((state) => {
+              const { [schoolId]: _classes, ...classesBySchool } = state.classesBySchool;
+              const { [schoolId]: _status, ...statusBySchool } = state.statusBySchool;
+              const { [schoolId]: _error, ...errorBySchool } = state.errorBySchool;
+              return { classesBySchool, statusBySchool, errorBySchool };
+            }),
+
           deleteClass: async (schoolClass) => {
             await repository.remove(schoolClass.id);
             setSchoolClasses(
@@ -105,7 +115,25 @@ export const createClassStore = (
     ),
   );
 
+type ClassStore = ReturnType<typeof createClassStore>;
+type SchoolStore = typeof useSchoolStore;
+
+/**
+ * Mantém o cache de turmas coerente com as escolas: quando uma escola sai da lista
+ * (excluída aqui ou em outro lugar), as turmas dela são descartadas.
+ */
+export function pruneClassesOfRemovedSchools(classStore: ClassStore, schoolStore: SchoolStore) {
+  return schoolStore.subscribe((state, previous) => {
+    const remaining = new Set(state.schools.map((school) => school.id));
+    previous.schools
+      .filter((school) => !remaining.has(school.id))
+      .forEach((school) => classStore.getState().removeSchoolClasses(school.id));
+  });
+}
+
 export const useClassStore = createClassStore(classRepository, {
   onClassIdsChange: (schoolId, classIds) =>
     useSchoolStore.getState().setClassIds(schoolId, classIds),
 });
+
+pruneClassesOfRemovedSchools(useClassStore, useSchoolStore);
