@@ -66,4 +66,30 @@ describe('FetchHttpClient', () => {
       message: 'Não foi possível conectar ao servidor.',
     });
   });
+
+  it('returns a friendly ApiError when an error response is not json', async () => {
+    fetchMock.mockReturnValue(
+      Promise.resolve({
+        ok: false,
+        status: 502,
+        text: () => Promise.resolve('<html>Bad Gateway</html>'),
+      } as Response),
+    );
+
+    await expect(client.get('/schools')).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 502,
+      message: 'O servidor não conseguiu atender a solicitação (erro 502).',
+    });
+  });
+
+  it('rejects successful responses with an invalid body', async () => {
+    fetchMock.mockReturnValue(
+      Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve('oops') } as Response),
+    );
+
+    await expect(client.get('/schools')).rejects.toMatchObject({
+      message: 'O servidor retornou uma resposta inválida.',
+    });
+  });
 });

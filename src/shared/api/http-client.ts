@@ -55,14 +55,32 @@ export class FetchHttpClient implements HttpClient {
     }
 
     const text = await response.text();
-    const data = text ? (JSON.parse(text) as unknown) : undefined;
+    const data = parseJson(text);
 
     if (!response.ok) {
       const { message, errors } = (data ?? {}) as ErrorBody;
-      throw new ApiError(message ?? `Erro ${response.status}`, response.status, errors);
+      throw new ApiError(
+        message ?? `O servidor não conseguiu atender a solicitação (erro ${response.status}).`,
+        response.status,
+        errors,
+      );
+    }
+
+    if (text && data === undefined) {
+      throw new ApiError('O servidor retornou uma resposta inválida.', response.status);
     }
 
     return data as T;
+  }
+}
+
+/** Corpos que não são JSON (ex.: página HTML de erro de um gateway) viram `undefined`. */
+function parseJson(text: string): unknown {
+  if (!text) return undefined;
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return undefined;
   }
 }
 
