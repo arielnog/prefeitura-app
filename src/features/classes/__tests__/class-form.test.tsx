@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { ApiError } from '@/shared/api/api-error';
 import { buildSchoolClass } from '@/test/factories';
 
 import { ClassForm } from '../components/class-form';
@@ -69,5 +70,19 @@ describe('ClassForm', () => {
         schoolYear: 2025,
       }),
     );
+  });
+
+  it('shows server errors for fields the form does not display', async () => {
+    const createClass = jest
+      .fn()
+      .mockRejectedValue(new ApiError('Dados inválidos', 422, { schoolId: 'Escola inválida' }));
+    useClassStore.setState({ createClass });
+    await renderForm();
+
+    await fireEvent.changeText(screen.getByLabelText('Nome da turma'), '1A');
+    await fireEvent.press(screen.getByRole('radio', { name: 'Manhã' }));
+    await fireEvent.press(screen.getByText('Cadastrar turma'));
+
+    expect(await screen.findByText('Escola inválida')).toBeTruthy();
   });
 });

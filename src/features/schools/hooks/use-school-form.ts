@@ -1,12 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { ApiError, getErrorMessage } from '@/shared/api/api-error';
+import { applyServerErrors } from '@/shared/forms/apply-server-errors';
 import { useAppToast } from '@/shared/hooks/use-app-toast';
 
 import { schoolSchema, type SchoolFormValues } from '../schema';
 import { useSchoolStore } from '../store/school-store';
 import type { School } from '../types';
+
+const FORM_FIELDS = ['name', 'address'] as const satisfies readonly (keyof SchoolFormValues)[];
 
 interface UseSchoolFormOptions {
   school?: School;
@@ -30,13 +32,7 @@ export function useSchoolForm({ school, onSaved }: UseSchoolFormOptions) {
       toast.success(school ? 'Escola atualizada' : 'Escola cadastrada');
       onSaved(saved);
     } catch (error) {
-      if (error instanceof ApiError && error.isValidation) {
-        Object.entries(error.fieldErrors).forEach(([field, message]) =>
-          form.setError(field as keyof SchoolFormValues, { message }),
-        );
-        return;
-      }
-      form.setError('root', { message: getErrorMessage(error) });
+      applyServerErrors(error, form.setError, FORM_FIELDS);
     }
   });
 

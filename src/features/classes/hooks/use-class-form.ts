@@ -1,12 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { ApiError, getErrorMessage } from '@/shared/api/api-error';
+import { applyServerErrors } from '@/shared/forms/apply-server-errors';
 import { useAppToast } from '@/shared/hooks/use-app-toast';
 
 import { schoolClassSchema, type SchoolClassFormValues } from '../schema';
 import { useClassStore } from '../store/class-store';
 import type { SchoolClass } from '../types';
+
+const FORM_FIELDS = [
+  'name',
+  'shift',
+  'schoolYear',
+] as const satisfies readonly (keyof SchoolClassFormValues)[];
 
 interface UseClassFormOptions {
   schoolId: string;
@@ -37,13 +43,7 @@ export function useClassForm({ schoolId, schoolClass, onSaved }: UseClassFormOpt
       toast.success(schoolClass ? 'Turma atualizada' : 'Turma cadastrada');
       onSaved(saved);
     } catch (error) {
-      if (error instanceof ApiError && error.isValidation) {
-        Object.entries(error.fieldErrors).forEach(([field, message]) =>
-          form.setError(field as keyof SchoolClassFormValues, { message }),
-        );
-        return;
-      }
-      form.setError('root', { message: getErrorMessage(error) });
+      applyServerErrors(error, form.setError, FORM_FIELDS);
     }
   });
 
