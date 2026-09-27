@@ -13,7 +13,15 @@ export function useAppToast() {
       toast.show({
         placement: 'bottom',
         duration: DURATION[type],
-        render: ({ id }) => <FeedbackToast id={id} type={type} message={message} />,
+        render: ({ id }) => (
+          <FeedbackToast
+            id={id}
+            type={type}
+            message={message}
+            duration={DURATION[type]}
+            onClose={() => toast.close(id)}
+          />
+        ),
       });
     },
     [toast],
