@@ -22,7 +22,7 @@ export function TextField({ label, error, isRequired, ...inputProps }: TextField
         <FormControlLabelText className="font-medium text-foreground">{label}</FormControlLabelText>
       </FormControlLabel>
       <Input className="h-12 rounded-xl bg-card">
-        <InputField accessibilityLabel={label} {...inputProps} />
+        <InputField aria-label={label} {...inputProps} />
       </Input>
       <FormControlError>
         <FormControlErrorText className="text-destructive">{error}</FormControlErrorText>

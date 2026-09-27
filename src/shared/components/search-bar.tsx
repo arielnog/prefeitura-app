@@ -20,7 +20,7 @@ export function SearchBar({ value, onChangeText, placeholder = 'Buscar' }: Searc
         placeholder={placeholder}
         returnKeyType="search"
         autoCorrect={false}
-        accessibilityLabel={placeholder}
+        aria-label={placeholder}
       />
       {value ? (
         <InputSlot
