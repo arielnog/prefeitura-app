@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 
 export default function SchoolsScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Escolas</Text>
+    <View className="flex-1 items-center justify-center bg-background">
+      <Text className="text-2xl font-bold text-primary">Escolas</Text>
     </View>
   );
 }
