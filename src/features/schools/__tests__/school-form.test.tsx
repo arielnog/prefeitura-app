@@ -60,4 +60,20 @@ describe('SchoolForm', () => {
     expect(await screen.findByText('Endereço inválido')).toBeTruthy();
     expect(updateSchool).toHaveBeenCalledWith(school.id, { name: 'Antiga', address: 'Rua B' });
   });
+
+  it('shows unexpected errors inside the form', async () => {
+    const createSchool = jest
+      .fn()
+      .mockRejectedValue(new Error('Não foi possível conectar ao servidor.'));
+    useSchoolStore.setState({ createSchool });
+    await renderForm();
+
+    await fireEvent.changeText(screen.getByLabelText('Nome da escola'), 'Escola');
+    await fireEvent.changeText(screen.getByLabelText('Endereço'), 'Rua');
+    await fireEvent.press(screen.getByText('Cadastrar escola'));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível conectar ao servidor.',
+    );
+  });
 });

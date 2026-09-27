@@ -43,9 +43,14 @@ export function useClassForm({ schoolId, schoolClass, onSaved }: UseClassFormOpt
         );
         return;
       }
-      toast.error(getErrorMessage(error));
+      form.setError('root', { message: getErrorMessage(error) });
     }
   });
 
-  return { control: form.control, submit, isSubmitting: form.formState.isSubmitting };
+  return {
+    control: form.control,
+    submit,
+    isSubmitting: form.formState.isSubmitting,
+    formError: form.formState.errors.root?.message,
+  };
 }

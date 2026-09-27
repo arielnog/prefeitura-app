@@ -1,27 +1,19 @@
 import { useCallback, useMemo } from 'react';
 
-import { Toast, ToastDescription, useToast } from '@/components/ui/toast';
+import { useToast } from '@/components/ui/toast';
+import { FeedbackToast, type FeedbackType } from '@/shared/components/feedback-toast';
 
-type ToastAction = 'success' | 'error';
+const DURATION = { success: 3000, error: 5000 } as const;
 
 export function useAppToast() {
   const toast = useToast();
 
   const show = useCallback(
-    (action: ToastAction, message: string) => {
+    (type: FeedbackType, message: string) => {
       toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: ({ id }) => (
-          <Toast
-            nativeID={`toast-${id}`}
-            action={action}
-            variant="solid"
-            className={action === 'success' ? 'border-emerald-500' : 'border-destructive'}
-          >
-            <ToastDescription>{message}</ToastDescription>
-          </Toast>
-        ),
+        placement: 'bottom',
+        duration: DURATION[type],
+        render: ({ id }) => <FeedbackToast id={id} type={type} message={message} />,
       });
     },
     [toast],

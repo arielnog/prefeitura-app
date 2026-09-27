@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
 import { VStack } from '@/components/ui/vstack';
+import { FormErrorBanner } from '@/shared/components/form-error-banner';
 import { TextField } from '@/shared/components/text-field';
 
 import { useSchoolForm } from '../hooks/use-school-form';
@@ -14,7 +15,7 @@ interface SchoolFormProps {
 }
 
 export function SchoolForm({ school, onSaved }: SchoolFormProps) {
-  const { control, submit, isSubmitting } = useSchoolForm({ school, onSaved });
+  const { control, submit, isSubmitting, formError } = useSchoolForm({ school, onSaved });
 
   return (
     <KeyboardAvoidingView
@@ -57,6 +58,7 @@ export function SchoolForm({ school, onSaved }: SchoolFormProps) {
             />
           )}
         />
+        <FormErrorBanner message={formError} />
         <VStack className="pt-2">
           <Button size="lg" className="h-12 rounded-xl" onPress={submit} isDisabled={isSubmitting}>
             {isSubmitting ? <ButtonSpinner /> : null}

@@ -11,6 +11,7 @@ import {
   FormControlLabelText,
 } from '@/components/ui/form-control';
 import { VStack } from '@/components/ui/vstack';
+import { FormErrorBanner } from '@/shared/components/form-error-banner';
 import { TextField } from '@/shared/components/text-field';
 
 import { useClassForm } from '../hooks/use-class-form';
@@ -47,7 +48,11 @@ function FieldGroup({
 }
 
 export function ClassForm({ schoolId, schoolClass, onSaved }: ClassFormProps) {
-  const { control, submit, isSubmitting } = useClassForm({ schoolId, schoolClass, onSaved });
+  const { control, submit, isSubmitting, formError } = useClassForm({
+    schoolId,
+    schoolClass,
+    onSaved,
+  });
 
   return (
     <KeyboardAvoidingView
@@ -90,6 +95,7 @@ export function ClassForm({ schoolId, schoolClass, onSaved }: ClassFormProps) {
             </FieldGroup>
           )}
         />
+        <FormErrorBanner message={formError} />
         <VStack className="pt-2">
           <Button size="lg" className="h-12 rounded-xl" onPress={submit} isDisabled={isSubmitting}>
             {isSubmitting ? <ButtonSpinner /> : null}
