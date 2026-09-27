@@ -68,7 +68,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage"
   },
   "private": true,
   "jest": {
@@ -81,6 +82,21 @@
     ],
     "moduleNameMapper": {
       "^lucide-react-native$": "<rootDir>/node_modules/lucide-react-native/dist/cjs/lucide-react-native.js"
+    },
+    "collectCoverageFrom": [
+      "src/features/*/{api,hooks,store}/**/*.{ts,tsx}",
+      "src/features/*/filters.ts",
+      "src/shared/{api,forms,utils}/**/*.ts",
+      "src/shared/hooks/use-debounced-value.ts",
+      "src/mocks/server.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 85,
+        "branches": 75,
+        "functions": 85,
+        "lines": 85
+      }
     }
   }
 }
