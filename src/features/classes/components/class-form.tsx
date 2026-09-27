@@ -59,7 +59,10 @@ export function ClassForm({ schoolId, schoolClass, onSaved }: ClassFormProps) {
       className="flex-1"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerClassName="gap-5 p-5" keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerClassName="w-full max-w-xl gap-5 self-center p-5"
+        keyboardShouldPersistTaps="handled"
+      >
         <Controller
           control={control}
           name="name"

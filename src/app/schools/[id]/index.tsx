@@ -16,6 +16,7 @@ import { useDeleteSchool } from '@/features/schools/hooks/use-delete-school';
 import { useSchool } from '@/features/schools/hooks/use-school';
 import { AddFab } from '@/shared/components/add-fab';
 import { EmptyState } from '@/shared/components/empty-state';
+import { GridItem } from '@/shared/components/grid-item';
 import { ListSkeleton } from '@/shared/components/list-skeleton';
 import { ResourceFallback } from '@/shared/components/resource-fallback';
 import { SearchBar } from '@/shared/components/search-bar';
@@ -27,7 +28,7 @@ export default function SchoolDetailScreen() {
   const classes = useSchoolClasses(id);
   const schoolDeletion = useDeleteSchool(() => router.back());
   const classDeletion = useDeleteClass();
-  const { columns, isTablet } = useResponsive();
+  const { columns, horizontalPadding, itemWidth } = useResponsive();
 
   if (!school) {
     return (
@@ -87,7 +88,8 @@ export default function SchoolDetailScreen() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-        contentContainerClassName={`gap-3 pb-32 pt-4 ${isTablet ? 'px-8' : 'px-4'}`}
+        contentContainerClassName="gap-3 pb-32 pt-4"
+        contentContainerStyle={{ paddingHorizontal: horizontalPadding }}
         columnWrapperClassName={columns > 1 ? 'gap-3' : undefined}
         refreshControl={
           <RefreshControl refreshing={classes.isRefreshing} onRefresh={classes.refresh} />
@@ -118,7 +120,9 @@ export default function SchoolDetailScreen() {
         }
         ListEmptyComponent={renderEmpty}
         renderItem={({ item }) => (
-          <ClassCard schoolClass={item} onEdit={editClass} onDelete={classDeletion.request} />
+          <GridItem width={itemWidth}>
+            <ClassCard schoolClass={item} onEdit={editClass} onDelete={classDeletion.request} />
+          </GridItem>
         )}
       />
       <AddFab label="Nova turma" onPress={newClass} />

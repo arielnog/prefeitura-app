@@ -1,6 +1,5 @@
 import { MapPin, Pencil, Trash2, Users } from 'lucide-react-native';
 
-import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
@@ -41,10 +40,12 @@ export function SchoolCard({ school, onPress, onEdit, onDelete }: SchoolCardProp
               {school.address}
             </Text>
           </HStack>
-          <Badge variant="secondary" className="mt-2 self-start rounded-full">
-            <BadgeIcon as={Users} className="mr-1 text-secondary-foreground" />
-            <BadgeText className="text-secondary-foreground">{classCount}</BadgeText>
-          </Badge>
+          <HStack className="mt-2 items-center gap-1 self-start rounded-full bg-secondary px-2.5 py-1">
+            <Icon as={Users} size="xs" className="text-secondary-foreground" />
+            <Text size="xs" bold className="text-secondary-foreground">
+              {classCount}
+            </Text>
+          </HStack>
         </VStack>
         <HStack className="-mr-2 -mt-2">
           <IconButton

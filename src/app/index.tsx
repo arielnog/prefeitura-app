@@ -14,6 +14,7 @@ import type { School } from '@/features/schools/types';
 import { AddFab } from '@/shared/components/add-fab';
 import { Chip } from '@/shared/components/chip';
 import { EmptyState } from '@/shared/components/empty-state';
+import { GridItem } from '@/shared/components/grid-item';
 import { ListSkeleton } from '@/shared/components/list-skeleton';
 import { SearchBar } from '@/shared/components/search-bar';
 import { useResponsive } from '@/shared/hooks/use-responsive';
@@ -42,7 +43,7 @@ export default function SchoolsScreen() {
     refresh,
   } = useSchools();
   const deletion = useDeleteSchool();
-  const { columns, isTablet } = useResponsive();
+  const { columns, horizontalPadding, itemWidth } = useResponsive();
 
   const renderEmpty = () => {
     if (isInitialLoading) return <ListSkeleton />;
@@ -92,7 +93,8 @@ export default function SchoolsScreen() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-        contentContainerClassName={`gap-3 px-4 pb-32 pt-2 ${isTablet ? 'px-8' : ''}`}
+        contentContainerClassName="gap-3 pb-32 pt-2"
+        contentContainerStyle={{ paddingHorizontal: horizontalPadding }}
         columnWrapperClassName={columns > 1 ? 'gap-3' : undefined}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}
         ListHeaderComponent={
@@ -117,12 +119,14 @@ export default function SchoolsScreen() {
         }
         ListEmptyComponent={renderEmpty}
         renderItem={({ item }) => (
-          <SchoolCard
-            school={item}
-            onPress={openSchool}
-            onEdit={editSchool}
-            onDelete={deletion.request}
-          />
+          <GridItem width={itemWidth}>
+            <SchoolCard
+              school={item}
+              onPress={openSchool}
+              onEdit={editSchool}
+              onDelete={deletion.request}
+            />
+          </GridItem>
         )}
       />
       <AddFab label="Nova escola" onPress={() => router.push('/schools/new')} />
