@@ -83,4 +83,18 @@ describe('school store', () => {
 
     expect(store.getState().schools[0].classIds).toEqual(['10', '11']);
   });
+
+  it('fetches a single school and upserts it', async () => {
+    const existing = buildSchool({ name: 'B' });
+    const fetched = buildSchool({ name: 'A' });
+    const store = createSchoolStore(makeRepository({ get: jest.fn().mockResolvedValue(fetched) }), {
+      skipHydration: true,
+    });
+    store.setState({ schools: [existing] });
+
+    await store.getState().fetchSchool(fetched.id);
+    await store.getState().fetchSchool(fetched.id);
+
+    expect(store.getState().schools).toEqual([fetched, existing]);
+  });
 });

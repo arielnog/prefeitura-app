@@ -13,6 +13,8 @@ export interface SchoolState {
   status: RequestStatus;
   error: string | null;
   fetchSchools: () => Promise<void>;
+  /** Busca uma escola específica (ex.: aberta por deep link antes da lista carregar). */
+  fetchSchool: (id: string) => Promise<School>;
   createSchool: (input: SchoolInput) => Promise<School>;
   updateSchool: (id: string, input: SchoolInput) => Promise<School>;
   deleteSchool: (id: string) => Promise<void>;
@@ -22,8 +24,8 @@ export interface SchoolState {
 
 const byName = (a: School, b: School) => a.name.localeCompare(b.name, 'pt-BR');
 
-const replace = (schools: School[], school: School) =>
-  schools.map((item) => (item.id === school.id ? school : item));
+const upsert = (schools: School[], school: School) =>
+  [...schools.filter((item) => item.id !== school.id), school].sort(byName);
 
 interface StoreOptions {
   /** Desliga a leitura do cache persistido (útil em testes). */
@@ -51,15 +53,21 @@ export const createSchoolStore = (
           }
         },
 
+        fetchSchool: async (id) => {
+          const school = await repository.get(id);
+          set((state) => ({ schools: upsert(state.schools, school) }));
+          return school;
+        },
+
         createSchool: async (input) => {
           const school = await repository.create(input);
-          set((state) => ({ schools: [...state.schools, school].sort(byName) }));
+          set((state) => ({ schools: upsert(state.schools, school) }));
           return school;
         },
 
         updateSchool: async (id, input) => {
           const school = await repository.update(id, input);
-          set((state) => ({ schools: replace(state.schools, school).sort(byName) }));
+          set((state) => ({ schools: upsert(state.schools, school) }));
           return school;
         },
 

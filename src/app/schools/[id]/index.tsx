@@ -17,19 +17,22 @@ import { useSchool } from '@/features/schools/hooks/use-school';
 import { AddFab } from '@/shared/components/add-fab';
 import { EmptyState } from '@/shared/components/empty-state';
 import { ListSkeleton } from '@/shared/components/list-skeleton';
+import { ResourceFallback } from '@/shared/components/resource-fallback';
 import { SearchBar } from '@/shared/components/search-bar';
 import { useResponsive } from '@/shared/hooks/use-responsive';
 
 export default function SchoolDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const school = useSchool(id);
+  const { school, isLoading, error, retry } = useSchool(id);
   const classes = useSchoolClasses(id);
   const schoolDeletion = useDeleteSchool(() => router.back());
   const classDeletion = useDeleteClass();
   const { columns, isTablet } = useResponsive();
 
   if (!school) {
-    return <EmptyState icon={SearchX} title="Escola não encontrada" />;
+    return (
+      <ResourceFallback resource="Escola" isLoading={isLoading} error={error} onRetry={retry} />
+    );
   }
 
   const newClass = () =>
