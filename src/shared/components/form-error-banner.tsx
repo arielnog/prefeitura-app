@@ -1,6 +1,6 @@
 import { CircleAlert } from 'lucide-react-native';
+import { View } from 'react-native';
 
-import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 
@@ -9,8 +9,8 @@ export function FormErrorBanner({ message }: { message?: string }) {
   if (!message) return null;
 
   return (
-    <HStack
-      className="items-center gap-3 rounded-xl bg-red-600 p-4"
+    <View
+      className="flex-row items-center gap-3 rounded-xl bg-red-600 p-4"
       accessible
       accessibilityRole="alert"
       accessibilityLiveRegion="assertive"
@@ -19,6 +19,6 @@ export function FormErrorBanner({ message }: { message?: string }) {
       <Text size="sm" className="flex-1 text-white">
         {message}
       </Text>
-    </HStack>
+    </View>
   );
 }

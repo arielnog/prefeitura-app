@@ -60,7 +60,7 @@ export function FeedbackToast({ id, type, message, duration, onClose }: Feedback
           <View className="h-10 w-10 items-center justify-center rounded-full bg-white/20">
             <Icon as={variant.icon} size="xl" className="text-white" />
           </View>
-          <VStack
+          <View
             className="flex-1 gap-0.5"
             accessible
             accessibilityRole="alert"
@@ -73,7 +73,7 @@ export function FeedbackToast({ id, type, message, duration, onClose }: Feedback
             <Text size="sm" className="text-white/90">
               {message}
             </Text>
-          </VStack>
+          </View>
           <Pressable
             onPress={onClose}
             accessibilityRole="button"

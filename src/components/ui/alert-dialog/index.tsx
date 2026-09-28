@@ -121,7 +121,7 @@ const AlertDialog = React.forwardRef<
       {...props}
       className={alertDialogStyle({ class: className })}
       context={{ size }}
-      pointerEvents="box-none"
+      style={[{ pointerEvents: 'box-none' }, props.style]}
     />
   );
 });
@@ -134,7 +134,6 @@ const AlertDialogContent = React.forwardRef<
 
   return (
     <UIAccessibleAlertDialog.Content
-      pointerEvents="auto"
       entering={ZoomIn.duration(200).withInitialValues({
         transform: [{ scale: 0.9 }],
         opacity: 0,
@@ -142,6 +141,7 @@ const AlertDialogContent = React.forwardRef<
       exiting={FadeOut.duration(200)}
       ref={ref}
       {...props}
+      style={[{ pointerEvents: 'auto' }, props.style]}
       className={alertDialogContentStyle({
         parentVariants: {
           size: parentSize,

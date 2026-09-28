@@ -1,6 +1,6 @@
 import { Minus, Plus } from 'lucide-react-native';
+import { View } from 'react-native';
 
-import { HStack } from '@/components/ui/hstack';
 import { Text } from '@/components/ui/text';
 import { IconButton } from '@/shared/components/icon-button';
 
@@ -16,8 +16,8 @@ export function YearStepper({ value, onChange }: YearStepperProps) {
   const increment = () => onChange(Math.min(MAX_SCHOOL_YEAR, value + 1));
 
   return (
-    <HStack
-      className="h-12 items-center justify-between rounded-xl border border-border bg-card px-1"
+    <View
+      className="h-12 flex-row items-center justify-between rounded-xl border border-border bg-card px-1"
       accessible
       accessibilityRole="adjustable"
       accessibilityLabel="Ano letivo"
@@ -32,6 +32,6 @@ export function YearStepper({ value, onChange }: YearStepperProps) {
         {value}
       </Text>
       <IconButton icon={Plus} label="Próximo ano" onPress={increment} />
-    </HStack>
+    </View>
   );
 }

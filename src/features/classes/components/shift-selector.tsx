@@ -1,4 +1,5 @@
-import { HStack } from '@/components/ui/hstack';
+import { View } from 'react-native';
+
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
@@ -13,7 +14,7 @@ interface ShiftSelectorProps {
 
 export function ShiftSelector({ value, onChange }: ShiftSelectorProps) {
   return (
-    <HStack className="flex-wrap gap-2" accessibilityRole="radiogroup">
+    <View className="flex-row flex-wrap gap-2" accessibilityRole="radiogroup">
       {SHIFTS.map((shift) => {
         const { label, icon } = SHIFT_META[shift];
         const selected = value === shift;
@@ -43,6 +44,6 @@ export function ShiftSelector({ value, onChange }: ShiftSelectorProps) {
           </Pressable>
         );
       })}
-    </HStack>
+    </View>
   );
 }

@@ -1,10 +1,12 @@
-import { Skeleton, SkeletonText } from '@/components/ui/skeleton';
+import { View } from 'react-native';
+
 import { HStack } from '@/components/ui/hstack';
+import { Skeleton, SkeletonText } from '@/components/ui/skeleton';
 import { VStack } from '@/components/ui/vstack';
 
 export function ListSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <VStack className="gap-3" accessibilityLabel="Carregando">
+    <View className="gap-3" accessibilityLabel="Carregando">
       {Array.from({ length: count }, (_, index) => (
         <HStack key={index} className="items-center gap-3 rounded-2xl bg-card p-4">
           <Skeleton variant="circular" className="h-12 w-12" />
@@ -13,6 +15,6 @@ export function ListSkeleton({ count = 4 }: { count?: number }) {
           </VStack>
         </HStack>
       ))}
-    </VStack>
+    </View>
   );
 }
