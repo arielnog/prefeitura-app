@@ -1,10 +1,5 @@
 @import 'tailwindcss';
 @import 'uniwind';
-/* ─── UniWind theme variants ─────────────────────────────────────
-   Switched at runtime via Uniwind.setTheme('light' | 'dark' | 'adaptive').
-   Variable values match the nativewind config.ts tokens so that the
-   same Tailwind utility classes (bg-primary, text-foreground, etc.)
-   produce identical output regardless of styling engine.                */
 @layer theme {
   :root {
     @variant light {
@@ -49,9 +44,6 @@
   }
 }
 
-/* ─── Tailwind v4 color mappings ─────────────────────────────────
-   Maps the theme CSS variables above to Tailwind color utilities.
-   bg-primary → rgb(var(--primary)), text-foreground → rgb(var(--foreground)), etc. */
 @theme inline {
   --color-primary: rgb(var(--primary));
   --color-primary-foreground: rgb(var(--primary-foreground));

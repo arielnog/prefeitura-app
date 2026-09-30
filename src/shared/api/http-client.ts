@@ -4,7 +4,6 @@ import { ApiError, type FieldErrors } from './api-error';
 
 type QueryParams = Record<string, string | number | undefined>;
 
-/** Contrato mínimo de transporte HTTP usado pelos repositórios. */
 export interface HttpClient {
   get<T>(path: string, params?: QueryParams): Promise<T>;
   post<T>(path: string, body: unknown): Promise<T>;
@@ -22,7 +21,6 @@ const buildQuery = (params?: QueryParams) => {
   return entries.length ? `?${new URLSearchParams(entries as [string, string][]).toString()}` : '';
 };
 
-/** Adapter sobre a Fetch API: centraliza base URL, JSON e tradução de erros em `ApiError`. */
 export class FetchHttpClient implements HttpClient {
   constructor(private readonly baseUrl: string) {}
 
@@ -74,7 +72,6 @@ export class FetchHttpClient implements HttpClient {
   }
 }
 
-/** Corpos que não são JSON (ex.: página HTML de erro de um gateway) viram `undefined`. */
 function parseJson(text: string): unknown {
   if (!text) return undefined;
   try {

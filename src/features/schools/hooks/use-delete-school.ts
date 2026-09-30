@@ -6,7 +6,6 @@ import { useAppToast } from '@/shared/hooks/use-app-toast';
 import { useSchoolStore } from '../store/school-store';
 import type { School } from '../types';
 
-/** Fluxo de exclusão com confirmação: `request` abre o diálogo e `confirm` executa. */
 export function useDeleteSchool(onDeleted?: () => void) {
   const deleteSchool = useSchoolStore((state) => state.deleteSchool);
   const toast = useAppToast();

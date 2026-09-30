@@ -1,4 +1,3 @@
-/** Normaliza para busca: minúsculas e sem acentos ("Cecília" casa com "cecilia"). */
 export const normalize = (value: string) =>
   value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 
@@ -21,7 +20,6 @@ const GENERIC_WORDS = new Set([
   'e',
 ]);
 
-/** Iniciais ignorando termos genéricos ("EMEF Monteiro Lobato" → "ML"). */
 export const initials = (name: string) => {
   const words = name.split(/\s+/).filter(Boolean);
   const meaningful = words.filter((word) => !GENERIC_WORDS.has(normalize(word)));

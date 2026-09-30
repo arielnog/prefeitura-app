@@ -2,10 +2,6 @@ import type { FieldValues, Path, UseFormSetError } from 'react-hook-form';
 
 import { ApiError, getErrorMessage } from '@/shared/api/api-error';
 
-/**
- * Leva o erro de uma submissão para o formulário: erros de campos conhecidos vão para o campo;
- * o restante (campos que a tela não exibe, falhas de rede etc.) vira o erro geral (`root`).
- */
 export function applyServerErrors<T extends FieldValues>(
   error: unknown,
   setError: UseFormSetError<T>,

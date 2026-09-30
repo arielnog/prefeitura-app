@@ -4,7 +4,6 @@ import { View } from 'react-native';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 
-/** Erro geral do formulário (ex.: falha de rede), exibido dentro do modal onde o usuário está. */
 export function FormErrorBanner({ message }: { message?: string }) {
   if (!message) return null;
 

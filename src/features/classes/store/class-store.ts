@@ -17,14 +17,11 @@ export interface ClassState {
   createClass: (input: CreateSchoolClassInput) => Promise<SchoolClass>;
   updateClass: (schoolClass: SchoolClass, input: SchoolClassInput) => Promise<SchoolClass>;
   deleteClass: (schoolClass: SchoolClass) => Promise<void>;
-  /** Descarta o cache de turmas de uma escola (ex.: escola excluída; o servidor já removeu as turmas). */
   removeSchoolClasses: (schoolId: string) => void;
 }
 
 interface ClassStoreOptions {
-  /** Notifica quem mantém a contagem de turmas da escola (módulo de escolas). */
   onClassIdsChange?: (schoolId: string, classIds: string[]) => void;
-  /** Desliga a leitura do cache persistido (útil em testes). */
   skipHydration?: boolean;
 }
 
@@ -118,10 +115,6 @@ export const createClassStore = (
 type ClassStore = ReturnType<typeof createClassStore>;
 type SchoolStore = typeof useSchoolStore;
 
-/**
- * Mantém o cache de turmas coerente com as escolas: quando uma escola sai da lista
- * (excluída aqui ou em outro lugar), as turmas dela são descartadas.
- */
 export function pruneClassesOfRemovedSchools(classStore: ClassStore, schoolStore: SchoolStore) {
   return schoolStore.subscribe((state, previous) => {
     const remaining = new Set(state.schools.map((school) => school.id));

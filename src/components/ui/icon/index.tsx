@@ -102,7 +102,6 @@ const createIconUI = ({ ...props }: ParameterTypes) => {
   });
 };
 export { createIconUI as createIcon };
-// All Icons
 const AddIcon = createIcon({
   Root: Svg,
   viewBox: '0 0 24 24',

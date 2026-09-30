@@ -1,6 +1,5 @@
 import { DarkTheme, DefaultTheme, type Theme } from 'expo-router';
 
-// Espelha os tokens de `global.css` para header e fundo das telas nativas.
 export const lightNavigationTheme: Theme = {
   ...DefaultTheme,
   colors: {

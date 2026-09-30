@@ -22,7 +22,6 @@ interface ClassCardProps {
 export function ClassCard({ schoolClass, onEdit, onDelete }: ClassCardProps) {
   const shift = SHIFT_META[schoolClass.shift];
 
-  // Área principal e ações são irmãs (ver SchoolCard).
   return (
     <View className="flex-1 flex-row items-center rounded-2xl border border-border bg-card">
       <Pressable

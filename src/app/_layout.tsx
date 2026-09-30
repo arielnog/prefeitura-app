@@ -1,57 +1,28 @@
 import '@/global.css';
 
-import { Stack, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Stack } from 'expo-router';
 
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { useMockServer } from '@/shared/hooks/use-mock-server';
-import { darkNavigationTheme, lightNavigationTheme } from '@/shared/theme/navigation-theme';
+import { AppProviders } from '@/shared/providers/app-providers';
 
-SplashScreen.preventAutoHideAsync();
-
-// `modal` em vez de `formSheet`: com detents, o formSheet bloqueia o scroll do conteúdo.
 const formModal = { presentation: 'modal' } as const;
 
 export default function RootLayout() {
-  const ready = useMockServer();
-  const colorScheme = useColorScheme();
-
-  useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
-  }, [ready]);
-
-  if (!ready) return null;
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <GluestackUIProvider mode="system">
-        <ThemeProvider value={colorScheme === 'dark' ? darkNavigationTheme : lightNavigationTheme}>
-          <StatusBar style="auto" />
-          <Stack
-            screenOptions={{ headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal' }}
-          >
-            <Stack.Screen name="index" options={{ title: 'Escolas', headerLargeTitle: true }} />
-            <Stack.Screen name="schools/[id]/index" options={{ title: '' }} />
-            <Stack.Screen name="schools/new" options={{ ...formModal, title: 'Nova escola' }} />
-            <Stack.Screen
-              name="schools/[id]/classes/new"
-              options={{ ...formModal, title: 'Nova turma' }}
-            />
-            <Stack.Screen
-              name="schools/[id]/classes/[classId]/edit"
-              options={{ ...formModal, title: 'Editar turma' }}
-            />
-            <Stack.Screen
-              name="schools/[id]/edit"
-              options={{ ...formModal, title: 'Editar escola' }}
-            />
-          </Stack>
-        </ThemeProvider>
-      </GluestackUIProvider>
-    </GestureHandlerRootView>
+    <AppProviders>
+      <Stack screenOptions={{ headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal' }}>
+        <Stack.Screen name="index" options={{ title: 'Escolas', headerLargeTitle: true }} />
+        <Stack.Screen name="schools/[id]/index" options={{ title: '' }} />
+        <Stack.Screen name="schools/new" options={{ ...formModal, title: 'Nova escola' }} />
+        <Stack.Screen name="schools/[id]/edit" options={{ ...formModal, title: 'Editar escola' }} />
+        <Stack.Screen
+          name="schools/[id]/classes/new"
+          options={{ ...formModal, title: 'Nova turma' }}
+        />
+        <Stack.Screen
+          name="schools/[id]/classes/[classId]/edit"
+          options={{ ...formModal, title: 'Editar turma' }}
+        />
+      </Stack>
+    </AppProviders>
   );
 }

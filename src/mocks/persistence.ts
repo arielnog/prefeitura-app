@@ -12,7 +12,3 @@ export async function loadSnapshot(): Promise<DbSnapshot | null> {
 export async function saveSnapshot(snapshot: DbSnapshot): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
 }
-
-export async function clearSnapshot(): Promise<void> {
-  await AsyncStorage.removeItem(STORAGE_KEY);
-}

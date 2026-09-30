@@ -5,7 +5,6 @@ import { SHIFTS, type Shift } from './types';
 interface ShiftMeta {
   label: string;
   icon: LucideIcon;
-  /** Classes de cor (fundo suave + texto) para identificar o turno de relance. */
   tone: string;
 }
 

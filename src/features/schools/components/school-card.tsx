@@ -23,8 +23,6 @@ interface SchoolCardProps {
 export function SchoolCard({ school, onPress, onEdit, onDelete }: SchoolCardProps) {
   const classCount = pluralize(school.classIds.length, 'turma', 'turmas');
 
-  // Área principal e ações são irmãs (não aninhadas): botões dentro de botão são HTML
-  // inválido no web e ficam inacessíveis ao leitor de tela no celular.
   return (
     <View className="flex-1 flex-row items-start rounded-2xl border border-border bg-card">
       <Pressable

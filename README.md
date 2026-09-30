@@ -165,25 +165,21 @@ npm run test:coverage
 
 ## Arquitetura
 
-Organização **modular por feature**. As rotas em `src/app` só montam telas com o que vem de `features` e `shared`.
+Organização **modular por feature**. Os arquivos em `src/app` apenas declaram as rotas e reexportam as telas de `features`.
 
 ```
 src/
 ├── app/                        # Rotas (Expo Router)
-│   ├── _layout.tsx             # Providers, tema, mock e declaração das telas/modais
-│   ├── index.tsx               # Lista de escolas
-│   └── schools/
-│       ├── new.tsx             # Modal: nova escola
-│       └── [id]/
-│           ├── index.tsx       # Detalhe da escola + turmas
-│           ├── edit.tsx        # Modal: editar escola
-│           └── classes/        # Modais: nova turma / editar turma
+│   ├── _layout.tsx             # Stack e opções de cada tela/modal
+│   ├── index.tsx               # → SchoolsScreen
+│   └── schools/                # → telas de escola e turma
 ├── features/
 │   ├── schools/                # Módulo de escolas
 │   │   ├── api/                #   Repository (contrato + implementação HTTP)
 │   │   ├── store/              #   Store Zustand (factory + instância)
 │   │   ├── hooks/              #   useSchools, useSchool, useSchoolForm, useDeleteSchool
 │   │   ├── components/         #   Card, formulário, cabeçalho, diálogo...
+│   │   ├── screens/            #   Telas renderizadas pelas rotas
 │   │   ├── schema.ts           #   Validação (Zod)
 │   │   ├── filters.ts          #   Busca e filtros (funções puras)
 │   │   └── types.ts            #   Entidades tipadas
@@ -192,6 +188,7 @@ src/
 │   ├── api/                    #   HttpClient (Adapter) e ApiError
 │   ├── components/             #   EmptyState, SearchBar, ConfirmDialog, FeedbackToast...
 │   ├── hooks/                  #   useDebouncedValue, useResponsive, useAppToast...
+│   ├── providers/              #   AppProviders: tema, gesture handler, mock e splash
 │   ├── forms/ store/ theme/ utils/ config/
 ├── mocks/                      # MirageJS: models, factories, seeds, rotas, persistência
 ├── components/ui/              # Componentes gerados pelo Gluestack UI

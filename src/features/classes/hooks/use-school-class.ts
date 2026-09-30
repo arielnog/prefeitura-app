@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 
 import { useClassStore } from '../store/class-store';
 
-/** Turma pelo id; carrega as turmas da escola se ainda não estiverem no store (ex.: deep link). */
 export function useSchoolClass(schoolId: string | undefined, classId: string | undefined) {
   const schoolClass = useClassStore((state) =>
     schoolId ? state.classesBySchool[schoolId]?.find((item) => item.id === classId) : undefined,

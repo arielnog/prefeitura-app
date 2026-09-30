@@ -5,14 +5,12 @@ import { EmptyState } from '@/shared/components/empty-state';
 import { ListSkeleton } from '@/shared/components/list-skeleton';
 
 interface ResourceFallbackProps {
-  /** Nome do recurso no feminino singular, ex.: "Escola", "Turma". */
   resource: string;
   isLoading: boolean;
   error: string | null;
   onRetry: () => void;
 }
 
-/** Estado de uma tela enquanto o registro que ela exibe não está disponível. */
 export function ResourceFallback({ resource, isLoading, error, onRetry }: ResourceFallbackProps) {
   if (isLoading) {
     return (

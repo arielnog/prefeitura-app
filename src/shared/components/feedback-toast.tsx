@@ -25,7 +25,6 @@ const VARIANTS = {
 
 const MAX_WIDTH = 480;
 const SIDE_GUTTER = 16;
-/** Espaço reservado para o toast não cobrir o FAB no canto inferior. */
 const FAB_CLEARANCE = 88;
 
 interface FeedbackToastProps {
@@ -39,7 +38,6 @@ interface FeedbackToastProps {
 export function FeedbackToast({ id, type, message, duration, onClose }: FeedbackToastProps) {
   const variant = VARIANTS[type];
   const { width: windowWidth } = useWindowDimensions();
-  // O container de toasts se ajusta ao conteúdo, então a largura precisa ser explícita.
   const width = Math.min(windowWidth - SIDE_GUTTER * 2, MAX_WIDTH);
 
   const progress = useSharedValue(1);

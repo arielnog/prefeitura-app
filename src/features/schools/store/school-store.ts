@@ -13,12 +13,10 @@ export interface SchoolState {
   status: RequestStatus;
   error: string | null;
   fetchSchools: () => Promise<void>;
-  /** Busca uma escola específica (ex.: aberta por deep link antes da lista carregar). */
   fetchSchool: (id: string) => Promise<School>;
   createSchool: (input: SchoolInput) => Promise<School>;
   updateSchool: (id: string, input: SchoolInput) => Promise<School>;
   deleteSchool: (id: string) => Promise<void>;
-  /** Mantém `classIds` em sincronia quando o módulo de turmas altera os vínculos. */
   setClassIds: (schoolId: string, classIds: string[]) => void;
 }
 
@@ -28,7 +26,6 @@ const upsert = (schools: School[], school: School) =>
   [...schools.filter((item) => item.id !== school.id), school].sort(byName);
 
 interface StoreOptions {
-  /** Desliga a leitura do cache persistido (útil em testes). */
   skipHydration?: boolean;
 }
 

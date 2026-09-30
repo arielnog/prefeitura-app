@@ -11,7 +11,6 @@ import { SCHOOL_SEEDS } from './seeds';
 type SchoolAttrs = Omit<School, 'classIds'>;
 type SchoolClassAttrs = SchoolClass;
 
-/** Formato dos registros do ORM do Mirage (a tipagem genérica da lib é limitada). */
 interface SchoolRecord extends SchoolAttrs {
   schoolClassIds: string[];
   schoolClasses: { destroy(): void };
@@ -41,7 +40,6 @@ const factories = {
 
 type ModelName = 'school' | 'schoolClass';
 
-/** `create` com atributos livres: os genéricos do Mirage não inferem os campos dos models. */
 const createRecord = <T>(target: AppSchema | Server, model: ModelName, attrs: object) =>
   target.create(model, attrs as never) as unknown as T;
 
